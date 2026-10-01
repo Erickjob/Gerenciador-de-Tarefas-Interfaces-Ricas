@@ -1,6 +1,17 @@
 import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
+
+export interface Tarefa{
+  id: number;
+  titulo: string;
+  descricao: string;
+  prioridade: number;
+  date_limite: Date;
+  concluida: boolean;
+
+}
+
 @Component({
   imports: [RouterOutlet],
   selector: 'app-root',
