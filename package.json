@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "@openng/optimus-ui": "^2.0.2",
+    "@openng/optimus-ui-themes": "^2.0.2"
+  }
+}
