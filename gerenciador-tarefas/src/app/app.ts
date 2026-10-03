@@ -1,16 +1,5 @@
-import { Component, signal, input, output, eventeEmitter } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-
-
-export interface Tarefa{
-  id: number;
-  titulo: string;
-  descricao: string;
-  prioridade: number;
-  data_limite: Date;
-  concluida: boolean;
-
-}
 
 @Component({
   imports: [RouterOutlet],
@@ -18,18 +7,6 @@ export interface Tarefa{
   styleUrl: './app.css',
   templateUrl: './app.html',
 })
-
-export class gerenciador {
-  readonly prioridade = signal<[Tarefas[]]>([
-    {
-      id: 1,
-      titulo: 'Atividade de interface',
-      desricao: 'Fazer um trabalho bonitão',
-      prioridade: 1,
-      data_limita: new Date(),
-      concluida: false
-     }
-  ])
-
-  
+export class App {
+  protected readonly title = signal('gerenciador-tarefas');
 }
