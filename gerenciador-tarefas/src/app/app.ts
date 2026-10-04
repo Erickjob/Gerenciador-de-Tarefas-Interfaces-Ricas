@@ -52,11 +52,11 @@ import { Tarefa, ItemTarefa } from './components/item-tarefa';
         </div>
       </p-card>
 
-      <!-- Layout Grid Principal -->
+      <!-- Cadastro de Tarefa e exibição de tarefas -->
 
-    <div class="flex flex-col md:flex-row items-start gap-6 p-4">
+    <div class="flex flex-col md:flex-row items-start gap-6">
 
-      <div class="w-full md:w-40/100 shrink-0">
+      <div class="w-full md:w-[40%] shrink-0">
         
         <p-card header="Nova Tarefa">
           <div class="flex flex-col gap-5 justify-between">
@@ -79,7 +79,7 @@ import { Tarefa, ItemTarefa } from './components/item-tarefa';
             <div class=" flex gap-3 justify-between">
               <p-button 
               type="button"
-              (click)="adicionarTarefa()"
+              (click)="salvarTarefa()"
               label="Adicionar Tarefa" 
               icon="pi pi-plus" 
               />
@@ -102,9 +102,15 @@ import { Tarefa, ItemTarefa } from './components/item-tarefa';
        <div class="flex flex-col gap-4">
           @for (tarefa of tarefa(); track tarefa.id) {
             
-            <app-item-tarefa [tarefa]="tarefa">
+            <app-item-tarefa 
+              [tarefa]="tarefa"
+              [tarefa]="tarefa"
+              (Concluido)="alternarStatus($event)"
+              (Excluir)="Excluir($event)"
+              (Editar)="Editar($event)"
+              />
 
-            </app-item-tarefa>
+          
           }
         </div>
       </div>
@@ -134,35 +140,48 @@ export class App {
     { label: 'Alta', value: 3}
   ];
 
-  novaTarefa: Tarefa = {
-    id: 0,
-    titulo: '',
-    descricao: '',
-    prioridade: 1,
-    prazo: new Date(),
-    concluida: false
-  };
+  editandoId: number | null = null;
+
+  novaTarefa: Tarefa = this.getTarefaVazia();
+
+  private getTarefaVazia(): Tarefa {
+    return {
+      id: 0,
+      titulo: '',
+      descricao: '',
+      prioridade: 1,
+      prazo: new Date(),
+      concluida: false
+    };
+  }
 
   readonly concluidas = computed(() =>
     this.tarefa().filter(t => t.concluida).length
   );
 
-  // 4. A função que o botão do formulário vai chamar ao enviar
-  adicionarTarefa() {
-    console.log('Botão clicado! Dados atuais:', this.novaTarefa);
-    if (!this.novaTarefa.titulo.trim()) {
-      return;
+  
+  salvarTarefa() {
+    if (!this.novaTarefa.titulo.trim()) return;
+
+    if (this.editandoId !== null) {
+      const idEdicao = this.editandoId
+      this.tarefa.update(lista =>
+        lista.map(t => t.id === this.editandoId ? { ...this.novaTarefa, id: this.editandoId } : t)
+      );
+    } else {
+      // Modo Criação
+      const item: Tarefa = {
+        ...this.novaTarefa,
+        id: Date.now()
+      };
+      this.tarefa.update(lista => [...lista, item]);
     }
 
-    const item: Tarefa = {
-      ...this.novaTarefa,
-      id: Date.now() // Gera um ID temporário único com base no horário
-    };
-
-    this.tarefa.update(lista => [...lista, item]);
+    this.cancelar(); // Reseta o formulário e o estado de edição
   }
 
   cancelar(){
+    this.editandoId = null;
     this.novaTarefa = {
     id: 0,
     titulo: '',
@@ -173,6 +192,21 @@ export class App {
 
     }
 
+  }
+    alternarStatus(id: number) {
+    this.tarefa.update(lista =>
+      lista.map(t => t.id === id ? { ...t, concluida: !t.concluida } : t)
+    );
+  }
+    Excluir(id: number) {
+    this.tarefa.update(lista => lista.filter(t => t.id !== id));
+  }
+    Editar(id: number) {
+    const itemEncontrado = this.tarefa().find(t => t.id === id);
+    if (itemEncontrado) {
+      this.editandoId = id;
+      this.novaTarefa = { ...itemEncontrado };
+    }
   }
 
 }

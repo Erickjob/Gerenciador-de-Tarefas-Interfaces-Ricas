@@ -26,9 +26,9 @@ export interface Tarefa {
     <div class="flex flex-wrap items-center justify-between gap-4">
 
       <div class="flex items-center gap-3 justify-between">
-        <h3 class="text-[#001957] text-xl font-bold">
+        <h2 class="text-[#001957] text-xl font-bold">
             {{ tarefa.titulo }}
-        </h3>
+        </h2>
 
         @if(tarefa.prioridade === 1) {
             <p-tag value="Baixa" severity="success" [rounded]="true" icon="pi pi-arrow-down" />
@@ -55,11 +55,15 @@ export interface Tarefa {
     <div class="flex items-center gap-2 mt-6">
         <p-button type="button" icon="pi pi-check" label="Concluído"
          class="p-button-rounded p-button-success p-button-text" 
-         (click)="onToggle.emit(tarefa.id)" [disabled]="tarefa.concluida"/>
+         (click)="Concluido.emit(tarefa.id)" [disabled]="tarefa.concluida"/>
+
+         <p-button type="button" icon="pi pi-pencil" label="Editar" severity="warn"
+        class="p-button-rounded p-button-warning p-button-text" 
+        (click)="Editar.emit(tarefa.id)"/>
 
         <p-button type="button" icon="pi pi-trash" label="Excluir" severity="danger"
         class="p-button-rounded p-button-danger p-button-text" 
-        (click)="onRemover.emit(tarefa.id)"/>
+        (click)="Excluir.emit(tarefa.id)"/>
     </div>
 
 </article>
@@ -69,8 +73,9 @@ export interface Tarefa {
 
 export class ItemTarefa {
   @Input() tarefa!: Tarefa;
-  onToggle = output<number>();  // Envia o ID para marcar como concluída
-  onRemover = output<number>(); // Envia o ID para excluir
+  Concluido = output<number>();  // Envia o ID para marcar como concluída
+  Excluir = output<number>(); // Envia o ID para excluir
+  Editar = output<number>();    // Envia o ID para editar
 
   
 }
